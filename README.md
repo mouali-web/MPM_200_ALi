@@ -2,7 +2,14 @@
 ## Quantitative veterinary epidemiology and disease ecology lab
 ==============================
 
-Text summarizing your project.
+Write a 5-sentence summary about your first assignment on hummingbird data:
+
+What does your code do? Summarizing and analyzing the humming bird data.
+
+What are the main features and functionalities? Comparing the death and survival between groups and exploring how many birds were admitted to each rehabilitation center.
+
+What outputs does the code generate? Tables, plots and histograms
+
 
 ## Project Organization
 ------------
