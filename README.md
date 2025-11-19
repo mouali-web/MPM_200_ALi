@@ -1,6 +1,7 @@
 # Template GitHub Repository for EpiPandit Lab
 ## Quantitative veterinary epidemiology and disease ecology lab
 ==============================
+
 Summarizing the humming birds data: The codes used summarize and analyze the humming bird data.The mean features were comparing the death and survival between groups and exploring how many birds were admitted to each rehabilitation center. The outputs generate Tables, plots and histograms.
 
 
