@@ -1,14 +1,7 @@
 # Template GitHub Repository for EpiPandit Lab
 ## Quantitative veterinary epidemiology and disease ecology lab
 ==============================
-
-Write a 5-sentence summary about your first assignment on hummingbird data:
-
-What does your code do? Summarizing and analyzing the humming bird data.
-
-What are the main features and functionalities? Comparing the death and survival between groups and exploring how many birds were admitted to each rehabilitation center.
-
-What outputs does the code generate? Tables, plots and histograms
+Summarizing the humming birds data: The codes used summarize and analyze the humming bird data.The mean features were comparing the death and survival between groups and exploring how many birds were admitted to each rehabilitation center. The outputs generate Tables, plots and histograms.
 
 
 ## Project Organization
