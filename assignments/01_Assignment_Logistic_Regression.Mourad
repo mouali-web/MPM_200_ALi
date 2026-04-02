@@ -1,0 +1,550 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/mouali-web/MPM_200_ALi/blob/main/assignments/01_Assignment_Logistic_Regression.Mourad\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "19fbd19c-349d-4631-b4f4-a16fdf82e3a7",
+      "metadata": {
+        "id": "19fbd19c-349d-4631-b4f4-a16fdf82e3a7"
+      },
+      "source": [
+        "### Instructions\n",
+        "* For all questions, you must show your work. This will enable us to understand your thought process, give partial credit, and prevent crude cheating.\n",
+        "* Please ensure that you are not simply copying each other's code but rather striving to understand and learn from the work.\n",
+        "* Provide the R code at the end of your solution and include R commands along with R outputs to clearly describe your solutions."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "a8d32272-56a8-433e-9c10-70a2fdcc9668",
+      "metadata": {
+        "id": "a8d32272-56a8-433e-9c10-70a2fdcc9668"
+      },
+      "source": [
+        "### Dataset Overview\n",
+        "* The dataset contains information about medical diagnostic measurements for predicting diabetes in Pima Indian women. The outcome variable is `Outcome`, where:\n",
+        "* 1 indicates diabetes-positive.\n",
+        "* 0 indicates diabetes-negative.\n",
+        "\n",
+        "**The dataset includes the following variables:**\n",
+        "\n",
+        "* `Pregnancies`: Number of pregnancies.\n",
+        "* `Glucose`: Plasma glucose concentration.\n",
+        "* `BloodPressure`: Diastolic blood pressure (mm Hg).\n",
+        "* `SkinThickness`: Triceps skinfold thickness (mm).\n",
+        "* `Insulin`: 2-Hour serum insulin (mu U/ml).\n",
+        "* `BMI`: Body mass index (weight in kg/(height in m)^2).\n",
+        "* `DiabetesPedigreeFunction`: Diabetes pedigree function (genetic risk).\n",
+        "* `Age`: Age (years).\n",
+        "* `Outcome`: Binary outcome (0 or 1).\n",
+        "\n",
+        "`Smith, J.W., Everhart, J.E., Dickson, W.C., Knowler, W.C., & Johannes, R.S. (1988). Using the ADAP learning algorithm to forecast the onset of diabetes mellitus. In Proceedings of the Symposium on Computer Applications and Medical Care (pp. 261--265). IEEE Computer Society Press.`"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "7fc20c5d-c5ce-4ac5-8e51-4ec98d6f68f1",
+      "metadata": {
+        "id": "7fc20c5d-c5ce-4ac5-8e51-4ec98d6f68f1"
+      },
+      "source": [
+        "## Questions"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "7abeb084-02ad-49de-b8a5-c07560e7f510",
+      "metadata": {
+        "id": "7abeb084-02ad-49de-b8a5-c07560e7f510"
+      },
+      "source": [
+        "### Q0: Install necessary packages\n",
+        "Install and load the following packages:\n",
+        "`tidyverse`\n",
+        "`dplyr`\n",
+        "`ggplot2`"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "install.packages(\"tidyverse\")"
+      ],
+      "metadata": {
+        "id": "HeIecj7Vq8UN",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "outputId": "2ba06198-e7d0-4cd8-8f30-46848eceb4ff"
+      },
+      "id": "HeIecj7Vq8UN",
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "Installing package into ‘/usr/local/lib/R/site-library’\n",
+            "(as ‘lib’ is unspecified)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "install.packages(\"dplyr\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "K5-r9cleIk2f",
+        "outputId": "46ffdefe-030c-442f-81e8-9abb168ca04e"
+      },
+      "id": "K5-r9cleIk2f",
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "Installing package into ‘/usr/local/lib/R/site-library’\n",
+            "(as ‘lib’ is unspecified)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "install.packages(\"ggplot2\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "CmOaU935Iley",
+        "outputId": "4dea7625-7190-4ada-ea63-65dc518faa6f"
+      },
+      "id": "CmOaU935Iley",
+      "execution_count": 9,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "Installing package into ‘/usr/local/lib/R/site-library’\n",
+            "(as ‘lib’ is unspecified)\n",
+            "\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "library(tidyverse)\n",
+        "library(dplyr)\n",
+        "library(ggplot2)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "KSVtDUFMJO6a",
+        "outputId": "c034f4ef-ff6b-4e3b-924f-72d8e3823328"
+      },
+      "id": "KSVtDUFMJO6a",
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "── \u001b[1mAttaching core tidyverse packages\u001b[22m ──────────────────────── tidyverse 2.0.0 ──\n",
+            "\u001b[32m✔\u001b[39m \u001b[34mdplyr    \u001b[39m 1.2.0     \u001b[32m✔\u001b[39m \u001b[34mreadr    \u001b[39m 2.2.0\n",
+            "\u001b[32m✔\u001b[39m \u001b[34mforcats  \u001b[39m 1.0.1     \u001b[32m✔\u001b[39m \u001b[34mstringr  \u001b[39m 1.6.0\n",
+            "\u001b[32m✔\u001b[39m \u001b[34mggplot2  \u001b[39m 4.0.2     \u001b[32m✔\u001b[39m \u001b[34mtibble   \u001b[39m 3.3.1\n",
+            "\u001b[32m✔\u001b[39m \u001b[34mlubridate\u001b[39m 1.9.5     \u001b[32m✔\u001b[39m \u001b[34mtidyr    \u001b[39m 1.3.2\n",
+            "\u001b[32m✔\u001b[39m \u001b[34mpurrr    \u001b[39m 1.2.1     \n",
+            "── \u001b[1mConflicts\u001b[22m ────────────────────────────────────────── tidyverse_conflicts() ──\n",
+            "\u001b[31m✖\u001b[39m \u001b[34mdplyr\u001b[39m::\u001b[32mfilter()\u001b[39m masks \u001b[34mstats\u001b[39m::filter()\n",
+            "\u001b[31m✖\u001b[39m \u001b[34mdplyr\u001b[39m::\u001b[32mlag()\u001b[39m    masks \u001b[34mstats\u001b[39m::lag()\n",
+            "\u001b[36mℹ\u001b[39m Use the conflicted package (\u001b[3m\u001b[34m<http://conflicted.r-lib.org/>\u001b[39m\u001b[23m) to force all conflicts to become errors\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "1f1baa3a-81a6-4c5a-8fc0-b8089cd8634a",
+      "metadata": {
+        "id": "1f1baa3a-81a6-4c5a-8fc0-b8089cd8634a"
+      },
+      "source": [
+        "### Q1: Load the dataset\n",
+        "* Read the Pima Indians Diabetes Database into R.  \n",
+        "Points: 2"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# First uploadig the csv file and then copying the path\n",
+        "data <- read.csv(\"/content/diabetes.csv\")"
+      ],
+      "metadata": {
+        "id": "wj5SPT0VT3uT"
+      },
+      "id": "wj5SPT0VT3uT",
+      "execution_count": 22,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Answer here"
+      ],
+      "metadata": {
+        "id": "C3LibQgeT5hZ"
+      },
+      "id": "C3LibQgeT5hZ"
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# Renaming the data into diabetes\n",
+        "diabetes <- data"
+      ],
+      "metadata": {
+        "id": "Ub4bT0rWT3n-"
+      },
+      "id": "Ub4bT0rWT3n-",
+      "execution_count": 25,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "id": "7fdf574e-6c9f-4df7-9329-48559b4a8d7d",
+      "metadata": {
+        "id": "7fdf574e-6c9f-4df7-9329-48559b4a8d7d"
+      },
+      "source": [
+        "### Q2: Explore the dataset\n",
+        "1. How many rows and columns are in the dataset?\n",
+        "2. How many columns are categorical, and how many are continuous?\n",
+        "Points: 3\n",
+        "\n",
+        "### Q3: Create a random subset\n",
+        "Create a random subset of 500 rows from the dataset using the following code:"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#How many rows\n",
+        "nrow(diabetes)\n"
+      ],
+      "metadata": {
+        "id": "OcfB19FAZcca",
+        "outputId": "21d0458f-7f86-4f76-94b0-68478e95eaea",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        }
+      },
+      "id": "OcfB19FAZcca",
+      "execution_count": 26,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/html": [
+              "768"
+            ],
+            "text/markdown": "768",
+            "text/latex": "768",
+            "text/plain": [
+              "[1] 768"
+            ]
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#How many columns\n",
+        "ncol(data)"
+      ],
+      "metadata": {
+        "id": "ez18FjPvZnIZ",
+        "outputId": "43d67802-3896-46b8-a9b7-bea5e6e7689a",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        }
+      },
+      "id": "ez18FjPvZnIZ",
+      "execution_count": 27,
+      "outputs": [
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/html": [
+              "9"
+            ],
+            "text/markdown": "9",
+            "text/latex": "9",
+            "text/plain": [
+              "[1] 9"
+            ]
+          },
+          "metadata": {}
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "ez6wxBGjboH4"
+      },
+      "id": "ez6wxBGjboH4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "The data has **768** rows and **9** columns (variables)"
+      ],
+      "metadata": {
+        "id": "QpGUBZ3UbC9e"
+      },
+      "id": "QpGUBZ3UbC9e"
+    },
+    {
+      "cell_type": "markdown",
+      "id": "a42ea16f-3ecf-46a9-bc65-bd61fe75fbc1",
+      "metadata": {
+        "id": "a42ea16f-3ecf-46a9-bc65-bd61fe75fbc1"
+      },
+      "source": [
+        "Use this subset (`model_data`) for all subsequent questions.  \n",
+        "Points: 1"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "b3e4e93b-4456-4f19-9d38-58e7811d0e9a",
+      "metadata": {
+        "id": "b3e4e93b-4456-4f19-9d38-58e7811d0e9a"
+      },
+      "source": [
+        "### Q4: Tabulate and visualize the outcome variable\n",
+        "1. Tabulate and plot the distribution of the outcome variable (Outcome).  \n",
+        "2. Save this plot as a PDF file (4 inches wide, 3 inches tall) and submit it along with your assignment.\n",
+        "Points: 3\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "556fd5ba-c276-4412-a5e2-aa2896357f91",
+      "metadata": {
+        "id": "556fd5ba-c276-4412-a5e2-aa2896357f91"
+      },
+      "source": [
+        "### Q5: Explore covariates\n",
+        "1. Choose five covariates that you think might affect diabetes prediction based on general understanding.\n",
+        "2. For each covariate, create a table showing the distribution of values for each outcome (0 or 1).\n",
+        "3. Generate bar plots for these covariates using facet_grid in ggplot2.\n",
+        "Points: 5\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Q6: Understanding the problem\n",
+        "1. What is the outcome variable in this dataset?\n",
+        "2. Is the outcome continuous, count, or binary?\n",
+        "3. Based on this, which type of GLM family is appropriate?"
+      ],
+      "metadata": {
+        "id": "QlyJKj6yjalB"
+      },
+      "id": "QlyJKj6yjalB"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Q7 Writing the model\n",
+        "1. Write the mathematical form of the model:\n",
+        "2. What is being modeled on the left-hand side?\n",
+        "3. What transformation is applied (logit)?\n",
+        "4. How would you express (logit) this in words?"
+      ],
+      "metadata": {
+        "id": "f2xtFB-LjpL4"
+      },
+      "id": "f2xtFB-LjpL4"
+    },
+    {
+      "cell_type": "markdown",
+      "id": "a60639d1-a94d-4126-ab24-5debf6724b8b",
+      "metadata": {
+        "id": "a60639d1-a94d-4126-ab24-5debf6724b8b"
+      },
+      "source": [
+        "### Q7: Run univariate logistic regression models\n",
+        "1. Perform univariate logistic regression for each of the five selected covariates using the `glm()` function with a binomial family.\n",
+        "2. Identify which variable has the highest beta coefficient and explain its significance.\n",
+        "Points: 10\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "6fdce071-ed3f-4add-8f34-c4231a81e630",
+      "metadata": {
+        "id": "6fdce071-ed3f-4add-8f34-c4231a81e630"
+      },
+      "source": [
+        "### Q8: Interpret odds ratios\n",
+        "1. For each covariate in your final model:\n",
+        "2. Calculate odds ratios manually from model coefficients.\n",
+        "3. Interpret these odds ratios in words, considering whether they are statistically significant.\n",
+        "4. Use `sjPlot::tab_model()` to verify your calculations and compare results.\n",
+        "Points: 10\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "id": "d18c4aaf-e8ff-40a5-925f-6a3c461703f9",
+      "metadata": {
+        "id": "d18c4aaf-e8ff-40a5-925f-6a3c461703f9"
+      },
+      "source": [
+        "### Q9: Model diagnostics (do not attempt, for next assingment)\n",
+        "1. How many properties can you access from a fitted logistic regression model object in R? Use names(YOURMODEL) to explore.\n",
+        "2. Discuss any two properties that provide insights into model performance or interpretation.\n",
+        "3. What is deviance for your model?\n",
+        "4. What does a large reduction in deviance indicate?\n",
+        "5. How does deviance relate to:  \n",
+        "  model fit?  \n",
+        "  likelihood?  \n",
+        "Points: 10\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Q10 : Perform Residual diagnostics (do not attempt, for next assingment)\n",
+        "1. What types of residuals are available in GLMs?\n",
+        "2. Why do residual plots look different for binary outcomes?\n",
+        "3. Why do we see two bands in residual plots?\n",
+        "4. Which residual is generally preferred for GLMs and why?"
+      ],
+      "metadata": {
+        "id": "3wIVcWoPkQzl"
+      },
+      "id": "3wIVcWoPkQzl"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Q11: Run analysis for Influential observations using Cook's distance calculations (do not attempt, for next assingment))\n",
+        "1. What is Cook’s Distance measuring?\n",
+        "2. What does a large Cook’s Distance imply?\n",
+        "3. Should influential points always be removed? Why or why not?"
+      ],
+      "metadata": {
+        "id": "AL2MjTRJkcpk"
+      },
+      "id": "AL2MjTRJkcpk"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Q12: Run Model calibration for your model and data (do not attempt, for next assingment))\n",
+        "1. What does calibration mean in logistic regression?"
+      ],
+      "metadata": {
+        "id": "PTBjZ-Q8kqkJ"
+      },
+      "id": "PTBjZ-Q8kqkJ"
+    },
+    {
+      "cell_type": "markdown",
+      "id": "8cce2b7a-1692-4568-929f-51b2d6b83021",
+      "metadata": {
+        "id": "8cce2b7a-1692-4568-929f-51b2d6b83021"
+      },
+      "source": [
+        "### Q13: Final interpretation\n",
+        "Based on your analysis:\n",
+        "1. Which variable has the highest odds ratio for predicting diabetes?\n",
+        "2. Write down statistical interpretation of this odds ratio.  \n",
+        "Points: 10"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bonus Question:\n",
+        "Manully code IRLS method to fit your logistic regression and compare the results with results from `glm()` function"
+      ],
+      "metadata": {
+        "id": "lJ3U7RQtk9Oe"
+      },
+      "id": "lJ3U7RQtk9Oe"
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "nEkHkg-8k5zl"
+      },
+      "id": "nEkHkg-8k5zl",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "R",
+      "name": "ir"
+    },
+    "language_info": {
+      "codemirror_mode": "r",
+      "file_extension": ".r",
+      "mimetype": "text/x-r-source",
+      "name": "R",
+      "pygments_lexer": "r",
+      "version": "4.4.1"
+    },
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
